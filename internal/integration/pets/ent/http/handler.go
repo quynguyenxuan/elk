@@ -60,19 +60,19 @@ func (h *BadgeHandler) Mount(r fiber.Router, rs Routes) {
 		r.Post("/", FastHttpHandler(h.Create))
 	}
 	if rs.has(BadgeRead) {
-		r.Get("/{id}", FastHttpHandler(h.Read))
+		r.Get("/:id", FastHttpHandler(h.Read))
 	}
 	if rs.has(BadgeUpdate) {
-		r.Patch("/{id}", FastHttpHandler(h.Update))
+		r.Patch("/id", FastHttpHandler(h.Update))
 	}
 	if rs.has(BadgeDelete) {
-		r.Delete("/{id}", FastHttpHandler(h.Delete))
+		r.Delete("/id", FastHttpHandler(h.Delete))
 	}
 	if rs.has(BadgeList) {
 		r.Get("/", FastHttpHandler(h.List))
 	}
 	if rs.has(BadgeWearer) {
-		r.Get("/{id}/wearer", FastHttpHandler(h.Wearer))
+		r.Get("/:id/wearer", FastHttpHandler(h.Wearer))
 	}
 }
 
@@ -115,43 +115,43 @@ func (h *PetHandler) Mount(r fiber.Router, rs Routes) {
 		r.Post("/", FastHttpHandler(h.Create))
 	}
 	if rs.has(PetRead) {
-		r.Get("/{id}", FastHttpHandler(h.Read))
+		r.Get("/:id", FastHttpHandler(h.Read))
 	}
 	if rs.has(PetUpdate) {
-		r.Patch("/{id}", FastHttpHandler(h.Update))
+		r.Patch("/id", FastHttpHandler(h.Update))
 	}
 	if rs.has(PetDelete) {
-		r.Delete("/{id}", FastHttpHandler(h.Delete))
+		r.Delete("/id", FastHttpHandler(h.Delete))
 	}
 	if rs.has(PetList) {
 		r.Get("/", FastHttpHandler(h.List))
 	}
 	if rs.has(PetBadge) {
-		r.Get("/{id}/badge", FastHttpHandler(h.Badge))
+		r.Get("/:id/badge", FastHttpHandler(h.Badge))
 	}
 	if rs.has(PetProtege) {
-		r.Get("/{id}/protege", FastHttpHandler(h.Protege))
+		r.Get("/:id/protege", FastHttpHandler(h.Protege))
 	}
 	if rs.has(PetMentor) {
-		r.Get("/{id}/mentor", FastHttpHandler(h.Mentor))
+		r.Get("/:id/mentor", FastHttpHandler(h.Mentor))
 	}
 	if rs.has(PetSpouse) {
-		r.Get("/{id}/spouse", FastHttpHandler(h.Spouse))
+		r.Get("/:id/spouse", FastHttpHandler(h.Spouse))
 	}
 	if rs.has(PetToys) {
-		r.Get("/{id}/toys", FastHttpHandler(h.Toys))
+		r.Get("/:id/toys", FastHttpHandler(h.Toys))
 	}
 	if rs.has(PetParent) {
-		r.Get("/{id}/parent", FastHttpHandler(h.Parent))
+		r.Get("/:id/parent", FastHttpHandler(h.Parent))
 	}
 	if rs.has(PetChildren) {
-		r.Get("/{id}/children", FastHttpHandler(h.Children))
+		r.Get("/:id/children", FastHttpHandler(h.Children))
 	}
 	if rs.has(PetPlayGroups) {
-		r.Get("/{id}/play_groups", FastHttpHandler(h.PlayGroups))
+		r.Get("/:id/play_groups", FastHttpHandler(h.PlayGroups))
 	}
 	if rs.has(PetFriends) {
-		r.Get("/{id}/friends", FastHttpHandler(h.Friends))
+		r.Get("/:id/friends", FastHttpHandler(h.Friends))
 	}
 }
 
@@ -186,19 +186,19 @@ func (h *PlayGroupHandler) Mount(r fiber.Router, rs Routes) {
 		r.Post("/", FastHttpHandler(h.Create))
 	}
 	if rs.has(PlayGroupRead) {
-		r.Get("/{id}", FastHttpHandler(h.Read))
+		r.Get("/:id", FastHttpHandler(h.Read))
 	}
 	if rs.has(PlayGroupUpdate) {
-		r.Patch("/{id}", FastHttpHandler(h.Update))
+		r.Patch("/id", FastHttpHandler(h.Update))
 	}
 	if rs.has(PlayGroupDelete) {
-		r.Delete("/{id}", FastHttpHandler(h.Delete))
+		r.Delete("/id", FastHttpHandler(h.Delete))
 	}
 	if rs.has(PlayGroupList) {
 		r.Get("/", FastHttpHandler(h.List))
 	}
 	if rs.has(PlayGroupParticipants) {
-		r.Get("/{id}/participants", FastHttpHandler(h.Participants))
+		r.Get("/:id/participants", FastHttpHandler(h.Participants))
 	}
 }
 
@@ -233,19 +233,19 @@ func (h *ToyHandler) Mount(r fiber.Router, rs Routes) {
 		r.Post("/", FastHttpHandler(h.Create))
 	}
 	if rs.has(ToyRead) {
-		r.Get("/{id}", FastHttpHandler(h.Read))
+		r.Get("/:id", FastHttpHandler(h.Read))
 	}
 	if rs.has(ToyUpdate) {
-		r.Patch("/{id}", FastHttpHandler(h.Update))
+		r.Patch("/id", FastHttpHandler(h.Update))
 	}
 	if rs.has(ToyDelete) {
-		r.Delete("/{id}", FastHttpHandler(h.Delete))
+		r.Delete("/id", FastHttpHandler(h.Delete))
 	}
 	if rs.has(ToyList) {
 		r.Get("/", FastHttpHandler(h.List))
 	}
 	if rs.has(ToyOwner) {
-		r.Get("/{id}/owner", FastHttpHandler(h.Owner))
+		r.Get("/:id/owner", FastHttpHandler(h.Owner))
 	}
 }
 

@@ -57,20 +57,20 @@
                 r.Post("/", FastHttpHandler(h.Create))
             }
             if rs.has({{ $n.Name }}Read) {
-                r.Get("/{id}", FastHttpHandler(h.Read))
+                r.Get("/:id", FastHttpHandler(h.Read))
             }
             if rs.has({{ $n.Name }}Update) {
-                r.Patch("/{id}", FastHttpHandler(h.Update))
+                r.Patch("/id", FastHttpHandler(h.Update))
             }
             if rs.has({{ $n.Name }}Delete) {
-                r.Delete("/{id}", FastHttpHandler(h.Delete))
+                r.Delete("/id", FastHttpHandler(h.Delete))
             }
             if rs.has({{ $n.Name }}List) {
                 r.Get("/", FastHttpHandler(h.List))
             }
             {{ range $e := $n.Edges -}}
                 if rs.has({{ $n.Name }}{{ $e.Name | pascal }}) {
-                    r.Get("/{id}/{{ $e.Name }}", FastHttpHandler(h.{{ $e.Name | pascal }}))
+                    r.Get("/:id/{{ $e.Name }}", FastHttpHandler(h.{{ $e.Name | pascal }}))
                 }
             {{ end -}}
         }
