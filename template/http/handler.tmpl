@@ -14,14 +14,6 @@
 
     func (rs Routes) has(r Routes) bool { return rs&r != 0 }
 
-    func FastHttpHandler(h http.HandlerFunc) fiber.Handler {
-        return func(c *fiber.Ctx) error {
-            ctx := c.Context()
-            fasthttpH := fasthttpadaptor.NewFastHTTPHandlerFunc(h)
-            fasthttpH(ctx)
-            return nil
-        }
-    }
     {{ $pkg := base $.Config.Package }}
     {{ range $n := $.Nodes }}
         const (
@@ -54,23 +46,23 @@
         // RegisterHandlers registers the generated handlers on the given chi router.
         func (h *{{ $n.Name }}Handler) Mount(r fiber.Router, rs Routes) {
             if rs.has({{ $n.Name }}Create) {
-                r.Post("/", FastHttpHandler(h.Create))
+                r.Post("/", h.Create)
             }
             if rs.has({{ $n.Name }}Read) {
-                r.Get("/:id", FastHttpHandler(h.Read))
+                r.Get("/:id", h.Read)
             }
             if rs.has({{ $n.Name }}Update) {
-                r.Patch("/id", FastHttpHandler(h.Update))
+                r.Patch("/id", h.Update)
             }
             if rs.has({{ $n.Name }}Delete) {
-                r.Delete("/id", FastHttpHandler(h.Delete))
+                r.Delete("/id", h.Delete)
             }
             if rs.has({{ $n.Name }}List) {
-                r.Get("/", FastHttpHandler(h.List))
+                r.Get("/", h.List)
             }
             {{ range $e := $n.Edges -}}
                 if rs.has({{ $n.Name }}{{ $e.Name | pascal }}) {
-                    r.Get("/:id/{{ $e.Name }}", FastHttpHandler(h.{{ $e.Name | pascal }}))
+                    r.Get("/:id/{{ $e.Name }}", h.{{ $e.Name | pascal }})
                 }
             {{ end -}}
         }

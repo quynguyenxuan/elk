@@ -10,10 +10,11 @@
     {{ range $n := $.Nodes }}
         // Read fetches the {{ $pkg }}.{{ $n.Name }} identified by a given url-parameter from the
         // database and renders it to the client.
-        func (h *{{ $n.Name }}Handler) Read(w http.ResponseWriter, r *http.Request) {
+        func (h *{{ $n.Name }}Handler) Read(c *fiber.Ctx) error {
             l := h.log.With(zap.String("method", "Read"))
             {{- template "helper/http/id-from-url" $n -}}
-
+            var r http.Request
+	        fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
             // Create the query to fetch the {{ $n.Name }}
             q := h.client.{{ $n.Name }}.Query().Where({{ $n.Name | lower }}.ID({{ if $n.ID.HasGoType }}{{ $n.ID.Type }}(id){{ else }}id{{ end }}))
 
@@ -31,7 +32,7 @@
             -}}
 
             l.Info("{{ $n.Name | kebab }} rendered", zap.Int("{{ $n.ID.Name }}", id))
-            easyjson.MarshalToHTTPResponseWriter(New{{ (responseView $n $n.Annotations.Elk.ReadGroups).ViewName }}(e), w)
+            return c.JSON(New{{ (responseView $n $n.Annotations.Elk.ReadGroups).ViewName }}(e))
         }
     {{ end }}
 {{ end }}

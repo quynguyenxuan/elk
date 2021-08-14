@@ -6,28 +6,28 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/mailru/easyjson"
+	"github.com/gofiber/fiber/v2"
 	"github.com/masseelch/elk/internal/integration/pets/ent"
 	badge "github.com/masseelch/elk/internal/integration/pets/ent/badge"
 	pet "github.com/masseelch/elk/internal/integration/pets/ent/pet"
 	playgroup "github.com/masseelch/elk/internal/integration/pets/ent/playgroup"
 	toy "github.com/masseelch/elk/internal/integration/pets/ent/toy"
-	"github.com/masseelch/render"
+	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
 )
 
 // Read fetches the ent.Badge identified by a given url-parameter from the
 // database and renders it to the client.
-func (h *BadgeHandler) Read(w http.ResponseWriter, r *http.Request) {
+func (h *BadgeHandler) Read(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Read"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	// Create the query to fetch the Badge
 	q := h.client.Badge.Query().Where(badge.ID(id))
 	e, err := q.Only(r.Context())
@@ -36,32 +36,33 @@ func (h *BadgeHandler) Read(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read badge", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("badge rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewBadge2492344257View(e), w)
+	return c.JSON(NewBadge2492344257View(e))
 }
 
 // Read fetches the ent.Pet identified by a given url-parameter from the
 // database and renders it to the client.
-func (h *PetHandler) Read(w http.ResponseWriter, r *http.Request) {
+func (h *PetHandler) Read(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Read"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	// Create the query to fetch the Pet
 	q := h.client.Pet.Query().Where(pet.ID(id))
 	// Eager load edges that are required on read operation.
@@ -1116,32 +1117,33 @@ func (h *PetHandler) Read(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read pet", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("pet rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewPet340207500View(e), w)
+	return c.JSON(NewPet340207500View(e))
 }
 
 // Read fetches the ent.PlayGroup identified by a given url-parameter from the
 // database and renders it to the client.
-func (h *PlayGroupHandler) Read(w http.ResponseWriter, r *http.Request) {
+func (h *PlayGroupHandler) Read(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Read"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	// Create the query to fetch the PlayGroup
 	q := h.client.PlayGroup.Query().Where(playgroup.ID(id))
 	e, err := q.Only(r.Context())
@@ -1150,32 +1152,33 @@ func (h *PlayGroupHandler) Read(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read play-group", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("play-group rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewPlayGroup3432834655View(e), w)
+	return c.JSON(NewPlayGroup3432834655View(e))
 }
 
 // Read fetches the ent.Toy identified by a given url-parameter from the
 // database and renders it to the client.
-func (h *ToyHandler) Read(w http.ResponseWriter, r *http.Request) {
+func (h *ToyHandler) Read(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Read"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	// Create the query to fetch the Toy
 	q := h.client.Toy.Query().Where(toy.ID(id))
 	e, err := q.Only(r.Context())
@@ -1184,17 +1187,17 @@ func (h *ToyHandler) Read(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read toy", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("toy rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewToy36157710View(e), w)
+	return c.JSON(NewToy36157710View(e))
 }

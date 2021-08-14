@@ -9,12 +9,14 @@
     {{ $pkg := base $.Config.Package }}
     {{ range $n := $.Nodes }}
         // Update updates a given {{ $pkg }}.{{ $n.Name }} and saves the changes to the database.
-        func (h {{ $n.Name }}Handler) Update(w http.ResponseWriter, r *http.Request) {
+        func (h {{ $n.Name }}Handler) Update(c *fiber.Ctx) error {
             l := h.log.With(zap.String("method", "Update"))
             {{- template "helper/http/id-from-url" $n -}}
             // Get the post data.
-            var d {{ $n.Name }}UpdateRequest
-
+            d := new({{ $n.Name }}UpdateRequest)
+            var r http.Request
+	        fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+            
             {{- template "helper/http/decode-and-validate-request" $n -}}
 
             // Save the data.
@@ -62,7 +64,7 @@
             -}}
 
             l.Info("{{ $n.Name | kebab }} rendered", zap.Int("{{ $n.ID.Name }}", e.{{ $n.ID.StructField }}))
-            easyjson.MarshalToHTTPResponseWriter(New{{ (responseView $n $n.Annotations.Elk.UpdateGroups).ViewName }}(e), w)
+            return c.JSON(New{{ (responseView $n $n.Annotations.Elk.UpdateGroups).ViewName }}(e))
         }
     {{ end }}
 {{ end }}

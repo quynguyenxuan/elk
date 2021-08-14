@@ -3,12 +3,10 @@
 package http
 
 import (
-	"net/http"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/masseelch/elk/internal/integration/pets/ent"
-	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
 )
 
@@ -19,15 +17,6 @@ type handler struct{}
 type Routes uint32
 
 func (rs Routes) has(r Routes) bool { return rs&r != 0 }
-
-func FastHttpHandler(h http.HandlerFunc) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		ctx := c.Context()
-		fasthttpH := fasthttpadaptor.NewFastHTTPHandlerFunc(h)
-		fasthttpH(ctx)
-		return nil
-	}
-}
 
 const (
 	BadgeCreate Routes = 1 << iota
@@ -57,22 +46,22 @@ func NewBadgeHandler(c *ent.Client, l *zap.Logger) *BadgeHandler {
 // RegisterHandlers registers the generated handlers on the given chi router.
 func (h *BadgeHandler) Mount(r fiber.Router, rs Routes) {
 	if rs.has(BadgeCreate) {
-		r.Post("/", FastHttpHandler(h.Create))
+		r.Post("/", h.Create)
 	}
 	if rs.has(BadgeRead) {
-		r.Get("/:id", FastHttpHandler(h.Read))
+		r.Get("/:id", h.Read)
 	}
 	if rs.has(BadgeUpdate) {
-		r.Patch("/id", FastHttpHandler(h.Update))
+		r.Patch("/id", h.Update)
 	}
 	if rs.has(BadgeDelete) {
-		r.Delete("/id", FastHttpHandler(h.Delete))
+		r.Delete("/id", h.Delete)
 	}
 	if rs.has(BadgeList) {
-		r.Get("/", FastHttpHandler(h.List))
+		r.Get("/", h.List)
 	}
 	if rs.has(BadgeWearer) {
-		r.Get("/:id/wearer", FastHttpHandler(h.Wearer))
+		r.Get("/:id/wearer", h.Wearer)
 	}
 }
 
@@ -112,46 +101,46 @@ func NewPetHandler(c *ent.Client, l *zap.Logger) *PetHandler {
 // RegisterHandlers registers the generated handlers on the given chi router.
 func (h *PetHandler) Mount(r fiber.Router, rs Routes) {
 	if rs.has(PetCreate) {
-		r.Post("/", FastHttpHandler(h.Create))
+		r.Post("/", h.Create)
 	}
 	if rs.has(PetRead) {
-		r.Get("/:id", FastHttpHandler(h.Read))
+		r.Get("/:id", h.Read)
 	}
 	if rs.has(PetUpdate) {
-		r.Patch("/id", FastHttpHandler(h.Update))
+		r.Patch("/id", h.Update)
 	}
 	if rs.has(PetDelete) {
-		r.Delete("/id", FastHttpHandler(h.Delete))
+		r.Delete("/id", h.Delete)
 	}
 	if rs.has(PetList) {
-		r.Get("/", FastHttpHandler(h.List))
+		r.Get("/", h.List)
 	}
 	if rs.has(PetBadge) {
-		r.Get("/:id/badge", FastHttpHandler(h.Badge))
+		r.Get("/:id/badge", h.Badge)
 	}
 	if rs.has(PetProtege) {
-		r.Get("/:id/protege", FastHttpHandler(h.Protege))
+		r.Get("/:id/protege", h.Protege)
 	}
 	if rs.has(PetMentor) {
-		r.Get("/:id/mentor", FastHttpHandler(h.Mentor))
+		r.Get("/:id/mentor", h.Mentor)
 	}
 	if rs.has(PetSpouse) {
-		r.Get("/:id/spouse", FastHttpHandler(h.Spouse))
+		r.Get("/:id/spouse", h.Spouse)
 	}
 	if rs.has(PetToys) {
-		r.Get("/:id/toys", FastHttpHandler(h.Toys))
+		r.Get("/:id/toys", h.Toys)
 	}
 	if rs.has(PetParent) {
-		r.Get("/:id/parent", FastHttpHandler(h.Parent))
+		r.Get("/:id/parent", h.Parent)
 	}
 	if rs.has(PetChildren) {
-		r.Get("/:id/children", FastHttpHandler(h.Children))
+		r.Get("/:id/children", h.Children)
 	}
 	if rs.has(PetPlayGroups) {
-		r.Get("/:id/play_groups", FastHttpHandler(h.PlayGroups))
+		r.Get("/:id/play_groups", h.PlayGroups)
 	}
 	if rs.has(PetFriends) {
-		r.Get("/:id/friends", FastHttpHandler(h.Friends))
+		r.Get("/:id/friends", h.Friends)
 	}
 }
 
@@ -183,22 +172,22 @@ func NewPlayGroupHandler(c *ent.Client, l *zap.Logger) *PlayGroupHandler {
 // RegisterHandlers registers the generated handlers on the given chi router.
 func (h *PlayGroupHandler) Mount(r fiber.Router, rs Routes) {
 	if rs.has(PlayGroupCreate) {
-		r.Post("/", FastHttpHandler(h.Create))
+		r.Post("/", h.Create)
 	}
 	if rs.has(PlayGroupRead) {
-		r.Get("/:id", FastHttpHandler(h.Read))
+		r.Get("/:id", h.Read)
 	}
 	if rs.has(PlayGroupUpdate) {
-		r.Patch("/id", FastHttpHandler(h.Update))
+		r.Patch("/id", h.Update)
 	}
 	if rs.has(PlayGroupDelete) {
-		r.Delete("/id", FastHttpHandler(h.Delete))
+		r.Delete("/id", h.Delete)
 	}
 	if rs.has(PlayGroupList) {
-		r.Get("/", FastHttpHandler(h.List))
+		r.Get("/", h.List)
 	}
 	if rs.has(PlayGroupParticipants) {
-		r.Get("/:id/participants", FastHttpHandler(h.Participants))
+		r.Get("/:id/participants", h.Participants)
 	}
 }
 
@@ -230,22 +219,22 @@ func NewToyHandler(c *ent.Client, l *zap.Logger) *ToyHandler {
 // RegisterHandlers registers the generated handlers on the given chi router.
 func (h *ToyHandler) Mount(r fiber.Router, rs Routes) {
 	if rs.has(ToyCreate) {
-		r.Post("/", FastHttpHandler(h.Create))
+		r.Post("/", h.Create)
 	}
 	if rs.has(ToyRead) {
-		r.Get("/:id", FastHttpHandler(h.Read))
+		r.Get("/:id", h.Read)
 	}
 	if rs.has(ToyUpdate) {
-		r.Patch("/id", FastHttpHandler(h.Update))
+		r.Patch("/id", h.Update)
 	}
 	if rs.has(ToyDelete) {
-		r.Delete("/id", FastHttpHandler(h.Delete))
+		r.Delete("/id", h.Delete)
 	}
 	if rs.has(ToyList) {
-		r.Get("/", FastHttpHandler(h.List))
+		r.Get("/", h.List)
 	}
 	if rs.has(ToyOwner) {
-		r.Get("/:id/owner", FastHttpHandler(h.Owner))
+		r.Get("/:id/owner", h.Owner)
 	}
 }
 

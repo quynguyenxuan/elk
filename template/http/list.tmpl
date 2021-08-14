@@ -10,9 +10,11 @@
     {{ range $n := $.Nodes }}
         // Read fetches the {{ $pkg }}.{{ $n.Name }} identified by a given url-parameter from the
         // database and returns it to the client.
-        func (h *{{ $n.Name }}Handler) List(w http.ResponseWriter, r *http.Request) {
+        func (h *{{ $n.Name }}Handler) List(c *fiber.Ctx) error {
             l := h.log.With(zap.String("method", "List"))
             q := h.client.{{ $n.Name }}.Query()
+            var r http.Request
+	        fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
             {{- with edgesToLoad $n "list" }}
                 // Eager load edges that are required on list operation.
                 q{{ .EntQuery }}
@@ -21,7 +23,7 @@
             {{- template "helper/http/pagination" $n -}}
 
             l.Info("{{ $n.Name | kebab | plural }} rendered", zap.Int("amount", len(es)))
-            easyjson.MarshalToHTTPResponseWriter(New{{ (responseView $n $n.Annotations.Elk.ListGroups).ViewName }}s(es), w)
+            return c.JSON(New{{ (responseView $n $n.Annotations.Elk.ListGroups).ViewName }}s(es))
         }
     {{ end }}
 {{ end }}

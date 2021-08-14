@@ -6,33 +6,33 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/mailru/easyjson"
+	"github.com/gofiber/fiber/v2"
 	"github.com/masseelch/elk/internal/integration/pets/ent"
 	badge "github.com/masseelch/elk/internal/integration/pets/ent/badge"
 	pet "github.com/masseelch/elk/internal/integration/pets/ent/pet"
 	playgroup "github.com/masseelch/elk/internal/integration/pets/ent/playgroup"
 	toy "github.com/masseelch/elk/internal/integration/pets/ent/toy"
-	"github.com/masseelch/render"
+	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
 )
 
 // Update updates a given ent.Badge and saves the changes to the database.
-func (h BadgeHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h BadgeHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
 	// Get the post data.
-	var d BadgeUpdateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(BadgeUpdateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Save the data.
 	b := h.client.Badge.UpdateOneID(id)
@@ -53,16 +53,16 @@ func (h BadgeHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-update-badge", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.Badge.Query().Where(badge.ID(e.ID))
@@ -72,37 +72,38 @@ func (h BadgeHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-read-badge", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("badge rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewBadge2492344257View(e), w)
+	return c.JSON(NewBadge2492344257View(e))
 }
 
 // Update updates a given ent.Pet and saves the changes to the database.
-func (h PetHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h PetHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
 	// Get the post data.
-	var d PetUpdateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(PetUpdateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Validate the data.
 	errs := make(map[string]string)
@@ -135,8 +136,8 @@ func (h PetHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(errs) > 0 {
 		l.Info("validation failed", zapFields(errs)...)
-		render.BadRequest(w, r, errs)
-		return
+		return c.Status(400).JSON(errs)
+
 	}
 	// Save the data.
 	b := h.client.Pet.UpdateOneID(id)
@@ -203,16 +204,16 @@ func (h PetHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-update-pet", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.Pet.Query().Where(pet.ID(e.ID))
@@ -1268,37 +1269,38 @@ func (h PetHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-read-pet", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("pet rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewPet340207500View(e), w)
+	return c.JSON(NewPet340207500View(e))
 }
 
 // Update updates a given ent.PlayGroup and saves the changes to the database.
-func (h PlayGroupHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h PlayGroupHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
 	// Get the post data.
-	var d PlayGroupUpdateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(PlayGroupUpdateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Save the data.
 	b := h.client.PlayGroup.UpdateOneID(id)
@@ -1321,16 +1323,16 @@ func (h PlayGroupHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-update-play-group", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.PlayGroup.Query().Where(playgroup.ID(e.ID))
@@ -1340,37 +1342,38 @@ func (h PlayGroupHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-read-play-group", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("play-group rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewPlayGroup3432834655View(e), w)
+	return c.JSON(NewPlayGroup3432834655View(e))
 }
 
 // Update updates a given ent.Toy and saves the changes to the database.
-func (h ToyHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h ToyHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
 	// Get the post data.
-	var d ToyUpdateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(ToyUpdateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Save the data.
 	b := h.client.Toy.UpdateOneID(id)
@@ -1394,16 +1397,16 @@ func (h ToyHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-update-toy", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.Toy.Query().Where(toy.ID(e.ID))
@@ -1413,17 +1416,17 @@ func (h ToyHandler) Update(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", id))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could-not-read-toy", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("toy rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewToy36157710View(e), w)
+	return c.JSON(NewToy36157710View(e))
 }

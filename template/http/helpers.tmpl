@@ -1,10 +1,10 @@
 {{ define "helper/http/decode-and-validate-request" -}}
     {{/* gotype: entgo.io/ent/entc/gen.Type */}}
-    if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+    
+    if err := c.BodyParser(d); err != nil {
         l.Error("error decoding json", zap.Error(err))
-        render.BadRequest(w, r, "invalid json string")
-        return
-    }
+        return c.Status(400).SendString("invalid json string")
+	}
     {{ if needsValidation $ -}}
         // Validate the data.
         errs := make(map[string]string)
@@ -36,8 +36,8 @@
         {{- end }}
         if len(errs) > 0 {
             l.Info("validation failed", zapFields(errs)...)
-            render.BadRequest(w, r, errs)
-            return
+            return c.Status(400).JSON(errs)
+            
         }
     {{ end -}}
 {{ end }}
@@ -45,14 +45,13 @@
 {{ define "helper/http/id-from-url" }}
     // ID is URL parameter.
     {{- if $.ID.IsInt }}
-        id, err := strconv.Atoi(chi.URLParam(r, "id"))
+        id, err := strconv.Atoi(c.Params("id"))
         if err != nil {
-            l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-            render.BadRequest(w, r, "id must be an integer greater zero")
-            return
+            l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+            return c.Status(400).SendString("id must be an integer greater zero")
         }
     {{ else }}
-        id := chi.URLParam(r, "id")
+        id := c.Params("id")
     {{ end -}}
 {{ end }}
 
@@ -64,48 +63,45 @@
                 case ent.IsNotFound(err):
                     msg := stripEntError(err)
                     l.Info(msg, zap.Error(err){{ range $.Logs }}, {{ . }}{{ end }})
-                    render.NotFound(w, r, msg)
+                    c.Status(404).SendString(msg)
             {{- else if eq $err "not-singular" }}
                 case ent.IsNotSingular(err):
                     msg := stripEntError(err)
                     l.Error(msg, zap.Error(err){{ range $.Logs }}, {{ . }}{{ end }})
-                    render.BadRequest(w, r, msg)
+                    c.Status(400).SendString(msg)
             {{- else if eq $err "privacy" }}
                 // Privacy case
             {{- end }}
         {{- end }}
         default:
             l.Error("{{ $.Default }}", zap.Error(err){{ range $.Logs }}, {{ . }}{{ end }})
-            render.InternalServerError(w, r, nil)
+            c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
         }
-        return
+        return nil
     }
 {{ end }}
 
 {{ define "helper/http/pagination" -}}
     {{/* gotype: entgo.io/ent/entc/gen.Type */}}
     page := 1
-    if d := r.URL.Query().Get("page"); d != "" {
+    if d := c.Query("page"); d != "" {
         page, err = strconv.Atoi(d)
         if err != nil {
             l.Info("error parsing query parameter 'page'", zap.String("page", d), zap.Error(err))
-            render.BadRequest(w, r, "page must be an integer greater zero")
-            return
+            return c.Status(400).SendString("page must be an integer greater zero")
         }
     }
     itemsPerPage := 30
-    if d := r.URL.Query().Get("itemsPerPage"); d != "" {
+    if d := c.Query("itemsPerPage"); d != "" {
         itemsPerPage, err = strconv.Atoi(d)
         if err != nil {
             l.Info("error parsing query parameter 'itemsPerPage'", zap.String("itemsPerPage", d), zap.Error(err))
-            render.BadRequest(w, r, "itemsPerPage must be an integer greater zero")
-            return
+            return c.Status(400).SendString("itemsPerPage must be an integer greater zero")
         }
     }
     es, err := q.Limit(itemsPerPage).Offset((page - 1) * itemsPerPage).All(r.Context())
     if err != nil {
         l.Error("error fetching {{ $.Name | kebab | plural}} from db", zap.Error(err))
-        render.InternalServerError(w, r, nil)
-        return
+        return c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
     }
 {{ end }}

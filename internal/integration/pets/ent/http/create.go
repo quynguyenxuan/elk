@@ -5,25 +5,27 @@ package http
 import (
 	"net/http"
 
-	"github.com/mailru/easyjson"
+	"github.com/gofiber/fiber/v2"
 	"github.com/masseelch/elk/internal/integration/pets/ent"
 	badge "github.com/masseelch/elk/internal/integration/pets/ent/badge"
 	pet "github.com/masseelch/elk/internal/integration/pets/ent/pet"
 	playgroup "github.com/masseelch/elk/internal/integration/pets/ent/playgroup"
 	toy "github.com/masseelch/elk/internal/integration/pets/ent/toy"
-	"github.com/masseelch/render"
+	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
 )
 
 // Create creates a new ent.Badge and stores it in the database.
-func (h BadgeHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h BadgeHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
 	// Get the post data.
-	var d BadgeCreateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(BadgeCreateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Save the data.
 	b := h.client.Badge.Create()
@@ -41,9 +43,9 @@ func (h BadgeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		switch {
 		default:
 			l.Error("could not create badge", zap.Error(err))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.Badge.Query().Where(badge.ID(e.ID))
@@ -53,30 +55,32 @@ func (h BadgeHandler) Create(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read badge", zap.Error(err), zap.Int("id", e.ID))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("badge rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewBadge2492344257View(e), w)
+	return c.JSON(NewBadge2492344257View(e))
 }
 
 // Create creates a new ent.Pet and stores it in the database.
-func (h PetHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h PetHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
 	// Get the post data.
-	var d PetCreateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(PetCreateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Validate the data.
 	errs := make(map[string]string)
@@ -109,8 +113,8 @@ func (h PetHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(errs) > 0 {
 		l.Info("validation failed", zapFields(errs)...)
-		render.BadRequest(w, r, errs)
-		return
+		return c.Status(400).JSON(errs)
+
 	}
 	// Save the data.
 	b := h.client.Pet.Create()
@@ -170,9 +174,9 @@ func (h PetHandler) Create(w http.ResponseWriter, r *http.Request) {
 		switch {
 		default:
 			l.Error("could not create pet", zap.Error(err))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.Pet.Query().Where(pet.ID(e.ID))
@@ -1228,30 +1232,32 @@ func (h PetHandler) Create(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read pet", zap.Error(err), zap.Int("id", e.ID))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("pet rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewPet340207500View(e), w)
+	return c.JSON(NewPet340207500View(e))
 }
 
 // Create creates a new ent.PlayGroup and stores it in the database.
-func (h PlayGroupHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h PlayGroupHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
 	// Get the post data.
-	var d PlayGroupCreateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(PlayGroupCreateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Save the data.
 	b := h.client.PlayGroup.Create()
@@ -1272,9 +1278,9 @@ func (h PlayGroupHandler) Create(w http.ResponseWriter, r *http.Request) {
 		switch {
 		default:
 			l.Error("could not create play-group", zap.Error(err))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.PlayGroup.Query().Where(playgroup.ID(e.ID))
@@ -1284,30 +1290,32 @@ func (h PlayGroupHandler) Create(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read play-group", zap.Error(err), zap.Int("id", e.ID))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("play-group rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewPlayGroup3432834655View(e), w)
+	return c.JSON(NewPlayGroup3432834655View(e))
 }
 
 // Create creates a new ent.Toy and stores it in the database.
-func (h ToyHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h ToyHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
 	// Get the post data.
-	var d ToyCreateRequest
-	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+	d := new(ToyCreateRequest)
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
+
+	if err := c.BodyParser(d); err != nil {
 		l.Error("error decoding json", zap.Error(err))
-		render.BadRequest(w, r, "invalid json string")
-		return
+		return c.Status(400).SendString("invalid json string")
 	}
 	// Save the data.
 	b := h.client.Toy.Create()
@@ -1328,9 +1336,9 @@ func (h ToyHandler) Create(w http.ResponseWriter, r *http.Request) {
 		switch {
 		default:
 			l.Error("could not create toy", zap.Error(err))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	// Reload entry.
 	q := h.client.Toy.Query().Where(toy.ID(e.ID))
@@ -1340,17 +1348,17 @@ func (h ToyHandler) Create(w http.ResponseWriter, r *http.Request) {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
 			l.Error(msg, zap.Error(err), zap.Int("id", e.ID))
-			render.BadRequest(w, r, msg)
+			c.Status(400).SendString(msg)
 		default:
 			l.Error("could not read toy", zap.Error(err), zap.Int("id", e.ID))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("toy rendered", zap.Int("id", e.ID))
-	easyjson.MarshalToHTTPResponseWriter(NewToy36157710View(e), w)
+	return c.JSON(NewToy36157710View(e))
 }

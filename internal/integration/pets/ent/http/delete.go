@@ -6,116 +6,120 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/gofiber/fiber/v2"
 	"github.com/masseelch/elk/internal/integration/pets/ent"
-	"github.com/masseelch/render"
+	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
 )
 
 // Delete removes a ent.Badge from the database.
-func (h BadgeHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h BadgeHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	err = h.client.Badge.DeleteOneID(id).Exec(r.Context())
 	if err != nil {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		default:
 			l.Error("could-not-delete-badge", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("badge deleted", zap.Int("id", id))
-	render.NoContent(w)
+	return c.SendString("Delete successfully")
 }
 
 // Delete removes a ent.Pet from the database.
-func (h PetHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h PetHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	err = h.client.Pet.DeleteOneID(id).Exec(r.Context())
 	if err != nil {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		default:
 			l.Error("could-not-delete-pet", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("pet deleted", zap.Int("id", id))
-	render.NoContent(w)
+	return c.SendString("Delete successfully")
 }
 
 // Delete removes a ent.PlayGroup from the database.
-func (h PlayGroupHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h PlayGroupHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	err = h.client.PlayGroup.DeleteOneID(id).Exec(r.Context())
 	if err != nil {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		default:
 			l.Error("could-not-delete-play-group", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("play-group deleted", zap.Int("id", id))
-	render.NoContent(w)
+	return c.SendString("Delete successfully")
 }
 
 // Delete removes a ent.Toy from the database.
-func (h ToyHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h ToyHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
 	// ID is URL parameter.
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		render.BadRequest(w, r, "id must be an integer greater zero")
-		return
+		l.Error("error getting id from url parameter", zap.String("id", c.Params("id")), zap.Error(err))
+		return c.Status(400).SendString("id must be an integer greater zero")
 	}
+	var r http.Request
+	fasthttpadaptor.ConvertRequest(c.Context(), &r, true)
 	err = h.client.Toy.DeleteOneID(id).Exec(r.Context())
 	if err != nil {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
 			l.Info(msg, zap.Error(err), zap.Int("id", id))
-			render.NotFound(w, r, msg)
+			c.Status(404).SendString(msg)
 		default:
 			l.Error("could-not-delete-toy", zap.Error(err), zap.Int("id", id))
-			render.InternalServerError(w, r, nil)
+			c.Status(fiber.StatusInternalServerError).SendString("Serve Error")
 		}
-		return
+		return nil
 	}
 	l.Info("toy deleted", zap.Int("id", id))
-	render.NoContent(w)
+	return c.SendString("Delete successfully")
 }
