@@ -52,10 +52,10 @@ func (h *BadgeHandler) Mount(r fiber.Router, rs Routes) {
 		r.Get("/:id", h.Read)
 	}
 	if rs.has(BadgeUpdate) {
-		r.Patch("/id", h.Update)
+		r.Patch("/:id", h.Update)
 	}
 	if rs.has(BadgeDelete) {
-		r.Delete("/id", h.Delete)
+		r.Delete("/:id", h.Delete)
 	}
 	if rs.has(BadgeList) {
 		r.Get("/", h.List)
@@ -107,10 +107,10 @@ func (h *PetHandler) Mount(r fiber.Router, rs Routes) {
 		r.Get("/:id", h.Read)
 	}
 	if rs.has(PetUpdate) {
-		r.Patch("/id", h.Update)
+		r.Patch("/:id", h.Update)
 	}
 	if rs.has(PetDelete) {
-		r.Delete("/id", h.Delete)
+		r.Delete("/:id", h.Delete)
 	}
 	if rs.has(PetList) {
 		r.Get("/", h.List)
@@ -178,10 +178,10 @@ func (h *PlayGroupHandler) Mount(r fiber.Router, rs Routes) {
 		r.Get("/:id", h.Read)
 	}
 	if rs.has(PlayGroupUpdate) {
-		r.Patch("/id", h.Update)
+		r.Patch("/:id", h.Update)
 	}
 	if rs.has(PlayGroupDelete) {
-		r.Delete("/id", h.Delete)
+		r.Delete("/:id", h.Delete)
 	}
 	if rs.has(PlayGroupList) {
 		r.Get("/", h.List)
@@ -225,10 +225,10 @@ func (h *ToyHandler) Mount(r fiber.Router, rs Routes) {
 		r.Get("/:id", h.Read)
 	}
 	if rs.has(ToyUpdate) {
-		r.Patch("/id", h.Update)
+		r.Patch("/:id", h.Update)
 	}
 	if rs.has(ToyDelete) {
-		r.Delete("/id", h.Delete)
+		r.Delete("/:id", h.Delete)
 	}
 	if rs.has(ToyList) {
 		r.Get("/", h.List)

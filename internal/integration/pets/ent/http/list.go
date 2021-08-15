@@ -11,6 +11,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Fetches Badge
+// @Description Fetches Badge
+// @ID Fetches Badge
+// @Tags [Badge]
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} ent.Badge
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /badge [get]
 // Read fetches the ent.Badge identified by a given url-parameter from the
 // database and returns it to the client.
 func (h *BadgeHandler) List(c *fiber.Ctx) error {
@@ -44,6 +55,17 @@ func (h *BadgeHandler) List(c *fiber.Ctx) error {
 	return c.JSON(NewBadge2492344257Views(es))
 }
 
+// @Summary Fetches Pet
+// @Description Fetches Pet
+// @ID Fetches Pet
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet [get]
 // Read fetches the ent.Pet identified by a given url-parameter from the
 // database and returns it to the client.
 func (h *PetHandler) List(c *fiber.Ctx) error {
@@ -79,6 +101,17 @@ func (h *PetHandler) List(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500Views(es))
 }
 
+// @Summary Fetches PlayGroup
+// @Description Fetches PlayGroup
+// @ID Fetches PlayGroup
+// @Tags [PlayGroup]
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} ent.PlayGroup
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /playgroup [get]
 // Read fetches the ent.PlayGroup identified by a given url-parameter from the
 // database and returns it to the client.
 func (h *PlayGroupHandler) List(c *fiber.Ctx) error {
@@ -112,6 +145,17 @@ func (h *PlayGroupHandler) List(c *fiber.Ctx) error {
 	return c.JSON(NewPlayGroup3432834655Views(es))
 }
 
+// @Summary Fetches Toy
+// @Description Fetches Toy
+// @ID Fetches Toy
+// @Tags [Toy]
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} ent.Toy
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /toy [get]
 // Read fetches the ent.Toy identified by a given url-parameter from the
 // database and returns it to the client.
 func (h *ToyHandler) List(c *fiber.Ctx) error {

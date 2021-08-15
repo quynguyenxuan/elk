@@ -8,6 +8,17 @@
 
     {{ $pkg := base $.Config.Package }}
     {{ range $n := $.Nodes }}
+        // @Summary Fetches {{ $n.Name }}
+        // @Description Fetches {{ $n.Name }}
+        // @ID Fetches {{ $n.Name }}
+        // @Tags [{{ $n.Name }}]
+        // @Accept  json
+        // @Produce  json
+        // @Success 200 {array} {{ $pkg }}.{{ $n.Name }}
+        // @Failure 400 {object} main.HTTPError
+        // @Failure 404 {object} main.HTTPError
+        // @Failure 500 {object} main.HTTPError
+        // @Router /{{ $n.Name | lower }} [get]
         // Read fetches the {{ $pkg }}.{{ $n.Name }} identified by a given url-parameter from the
         // database and returns it to the client.
         func (h *{{ $n.Name }}Handler) List(c *fiber.Ctx) error {

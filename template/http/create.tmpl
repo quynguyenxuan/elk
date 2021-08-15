@@ -8,6 +8,17 @@
 
     {{ $pkg := base $.Config.Package }}
     {{ range $n := $.Nodes }}
+        // @Summary Create a {{ $n.Name }}
+        // @Description create a {{ $n.Name }}
+        // @ID Create new {{ $n.Name }}
+        // @Tags [{{ $n.Name }}]
+        // @Accept  json
+        // @Produce  json
+        // @Success 200 {object} {{ $pkg }}.{{ $n.Name }}
+        // @Failure 400 {object} main.HTTPError
+        // @Failure 404 {object} main.HTTPError
+        // @Failure 500 {object} main.HTTPError
+        // @Router /{{ $n.Name | lower }} [post]
         // Create creates a new {{ $pkg }}.{{ $n.Name }} and stores it in the database.
         func (h {{ $n.Name }}Handler) Create(c *fiber.Ctx) error {
             l := h.log.With(zap.String("method", "Create"))

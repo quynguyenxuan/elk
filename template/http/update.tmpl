@@ -8,6 +8,18 @@
 
     {{ $pkg := base $.Config.Package }}
     {{ range $n := $.Nodes }}
+        // @Summary Update a {{ $n.Name }}
+        // @Description Update a {{ $n.Name }}
+        // @ID Update a {{ $n.Name }}
+        // @Tags [{{ $n.Name }}]
+        // @Accept  json
+        // @Produce  json
+        // @Param id path int true "{{ $n.Name }} ID"
+        // @Success 200 {object} {{ $pkg }}.{{ $n.Name }}
+        // @Failure 400 {object} main.HTTPError
+        // @Failure 404 {object} main.HTTPError
+        // @Failure 500 {object} main.HTTPError
+        // @Router /{{ $n.Name | lower }}/{id} [patch]
         // Update updates a given {{ $pkg }}.{{ $n.Name }} and saves the changes to the database.
         func (h {{ $n.Name }}Handler) Update(c *fiber.Ctx) error {
             l := h.log.With(zap.String("method", "Update"))

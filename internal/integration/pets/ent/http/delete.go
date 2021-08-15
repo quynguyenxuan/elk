@@ -12,6 +12,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Delete a Badge
+// @Description Delete a Badge
+// @ID Delete a Badge
+// @Tags [Badge]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Badge ID"
+// @Success 200 {object} ent.Badge
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /badge/{id} [delete]
 // Delete removes a ent.Badge from the database.
 func (h BadgeHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
@@ -40,6 +52,18 @@ func (h BadgeHandler) Delete(c *fiber.Ctx) error {
 	return c.SendString("Delete successfully")
 }
 
+// @Summary Delete a Pet
+// @Description Delete a Pet
+// @ID Delete a Pet
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id} [delete]
 // Delete removes a ent.Pet from the database.
 func (h PetHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
@@ -68,6 +92,18 @@ func (h PetHandler) Delete(c *fiber.Ctx) error {
 	return c.SendString("Delete successfully")
 }
 
+// @Summary Delete a PlayGroup
+// @Description Delete a PlayGroup
+// @ID Delete a PlayGroup
+// @Tags [PlayGroup]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "PlayGroup ID"
+// @Success 200 {object} ent.PlayGroup
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /playgroup/{id} [delete]
 // Delete removes a ent.PlayGroup from the database.
 func (h PlayGroupHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))
@@ -96,6 +132,18 @@ func (h PlayGroupHandler) Delete(c *fiber.Ctx) error {
 	return c.SendString("Delete successfully")
 }
 
+// @Summary Delete a Toy
+// @Description Delete a Toy
+// @ID Delete a Toy
+// @Tags [Toy]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Toy ID"
+// @Success 200 {object} ent.Toy
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /toy/{id} [delete]
 // Delete removes a ent.Toy from the database.
 func (h ToyHandler) Delete(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Delete"))

@@ -15,6 +15,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Create a Badge
+// @Description create a Badge
+// @ID Create new Badge
+// @Tags [Badge]
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} ent.Badge
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /badge [post]
 // Create creates a new ent.Badge and stores it in the database.
 func (h BadgeHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
@@ -70,6 +81,17 @@ func (h BadgeHandler) Create(c *fiber.Ctx) error {
 	return c.JSON(NewBadge2492344257View(e))
 }
 
+// @Summary Create a Pet
+// @Description create a Pet
+// @ID Create new Pet
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet [post]
 // Create creates a new ent.Pet and stores it in the database.
 func (h PetHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
@@ -1247,6 +1269,17 @@ func (h PetHandler) Create(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Create a PlayGroup
+// @Description create a PlayGroup
+// @ID Create new PlayGroup
+// @Tags [PlayGroup]
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} ent.PlayGroup
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /playgroup [post]
 // Create creates a new ent.PlayGroup and stores it in the database.
 func (h PlayGroupHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))
@@ -1305,6 +1338,17 @@ func (h PlayGroupHandler) Create(c *fiber.Ctx) error {
 	return c.JSON(NewPlayGroup3432834655View(e))
 }
 
+// @Summary Create a Toy
+// @Description create a Toy
+// @ID Create new Toy
+// @Tags [Toy]
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} ent.Toy
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /toy [post]
 // Create creates a new ent.Toy and stores it in the database.
 func (h ToyHandler) Create(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Create"))

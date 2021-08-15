@@ -52,10 +52,10 @@
                 r.Get("/:id", h.Read)
             }
             if rs.has({{ $n.Name }}Update) {
-                r.Patch("/id", h.Update)
+                r.Patch("/:id", h.Update)
             }
             if rs.has({{ $n.Name }}Delete) {
-                r.Delete("/id", h.Delete)
+                r.Delete("/:id", h.Delete)
             }
             if rs.has({{ $n.Name }}List) {
                 r.Get("/", h.List)

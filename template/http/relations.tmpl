@@ -9,6 +9,18 @@
     {{ $pkg := base $.Config.Package }}
     {{ range $n := $.Nodes }}
         {{ range $e := $n.Edges }}
+            // @Summary Get {{ $n.Name }} with {{ $e.Name | pascal }} 
+            // @Description Get {{ $n.Name }} with {{ $e.Name | pascal }} 
+            // @ID Get {{ $n.Name }} with {{ $e.Name | pascal }} 
+            // @Tags [{{ $n.Name }}]
+            // @Accept  json
+            // @Produce  json
+            // @Param id path int true "{{ $n.Name }} ID"
+            // @Success 200 {object} {{ $pkg }}.{{ $n.Name }}
+            // @Failure 400 {object} main.HTTPError
+            // @Failure 404 {object} main.HTTPError
+            // @Failure 500 {object} main.HTTPError
+            // @Router /{{ $n.Name | lower }}/{id}/{{ $e.Name }} [get]
             // {{ $e.Name | pascal }} fetches the {{ $pkg }}.{{ $e.Name }} attached to the {{ $pkg }}.{{ $n.Name }}
             // identified by a given url-parameter from the database and renders it to the client.
             func (h {{ $n.Name }}Handler) {{ $e.Name | pascal }}(c *fiber.Ctx) error {

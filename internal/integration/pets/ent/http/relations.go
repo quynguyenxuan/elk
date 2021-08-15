@@ -16,6 +16,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Get Badge with Wearer
+// @Description Get Badge with Wearer
+// @ID Get Badge with Wearer
+// @Tags [Badge]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Badge ID"
+// @Success 200 {object} ent.Badge
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /badge/{id}/wearer [get]
 // Wearer fetches the ent.wearer attached to the ent.Badge
 // identified by a given url-parameter from the database and renders it to the client.
 func (h BadgeHandler) Wearer(c *fiber.Ctx) error {
@@ -1098,6 +1110,18 @@ func (h BadgeHandler) Wearer(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Get Pet with Badge
+// @Description Get Pet with Badge
+// @ID Get Pet with Badge
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/badge [get]
 // Badge fetches the ent.badge attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Badge(c *fiber.Ctx) error {
@@ -1134,6 +1158,18 @@ func (h PetHandler) Badge(c *fiber.Ctx) error {
 	return c.JSON(NewBadge2492344257View(e))
 }
 
+// @Summary Get Pet with Protege
+// @Description Get Pet with Protege
+// @ID Get Pet with Protege
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/protege [get]
 // Protege fetches the ent.protege attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Protege(c *fiber.Ctx) error {
@@ -2216,6 +2252,18 @@ func (h PetHandler) Protege(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Get Pet with Mentor
+// @Description Get Pet with Mentor
+// @ID Get Pet with Mentor
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/mentor [get]
 // Mentor fetches the ent.mentor attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Mentor(c *fiber.Ctx) error {
@@ -3298,6 +3346,18 @@ func (h PetHandler) Mentor(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Get Pet with Spouse
+// @Description Get Pet with Spouse
+// @ID Get Pet with Spouse
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/spouse [get]
 // Spouse fetches the ent.spouse attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Spouse(c *fiber.Ctx) error {
@@ -4380,6 +4440,18 @@ func (h PetHandler) Spouse(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Get Pet with Toys
+// @Description Get Pet with Toys
+// @ID Get Pet with Toys
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/toys [get]
 // Toys fetches the ent.toys attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Toys(c *fiber.Ctx) error {
@@ -4419,6 +4491,18 @@ func (h PetHandler) Toys(c *fiber.Ctx) error {
 	return c.JSON(NewToy36157710Views(es))
 }
 
+// @Summary Get Pet with Parent
+// @Description Get Pet with Parent
+// @ID Get Pet with Parent
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/parent [get]
 // Parent fetches the ent.parent attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Parent(c *fiber.Ctx) error {
@@ -5501,6 +5585,18 @@ func (h PetHandler) Parent(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Get Pet with Children
+// @Description Get Pet with Children
+// @ID Get Pet with Children
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/children [get]
 // Children fetches the ent.children attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Children(c *fiber.Ctx) error {
@@ -5542,6 +5638,18 @@ func (h PetHandler) Children(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500Views(es))
 }
 
+// @Summary Get Pet with PlayGroups
+// @Description Get Pet with PlayGroups
+// @ID Get Pet with PlayGroups
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/play_groups [get]
 // PlayGroups fetches the ent.play_groups attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) PlayGroups(c *fiber.Ctx) error {
@@ -5581,6 +5689,18 @@ func (h PetHandler) PlayGroups(c *fiber.Ctx) error {
 	return c.JSON(NewPlayGroup3432834655Views(es))
 }
 
+// @Summary Get Pet with Friends
+// @Description Get Pet with Friends
+// @ID Get Pet with Friends
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id}/friends [get]
 // Friends fetches the ent.friends attached to the ent.Pet
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PetHandler) Friends(c *fiber.Ctx) error {
@@ -5622,6 +5742,18 @@ func (h PetHandler) Friends(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500Views(es))
 }
 
+// @Summary Get PlayGroup with Participants
+// @Description Get PlayGroup with Participants
+// @ID Get PlayGroup with Participants
+// @Tags [PlayGroup]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "PlayGroup ID"
+// @Success 200 {object} ent.PlayGroup
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /playgroup/{id}/participants [get]
 // Participants fetches the ent.participants attached to the ent.PlayGroup
 // identified by a given url-parameter from the database and renders it to the client.
 func (h PlayGroupHandler) Participants(c *fiber.Ctx) error {
@@ -5663,6 +5795,18 @@ func (h PlayGroupHandler) Participants(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500Views(es))
 }
 
+// @Summary Get Toy with Owner
+// @Description Get Toy with Owner
+// @ID Get Toy with Owner
+// @Tags [Toy]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Toy ID"
+// @Success 200 {object} ent.Toy
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /toy/{id}/owner [get]
 // Owner fetches the ent.owner attached to the ent.Toy
 // identified by a given url-parameter from the database and renders it to the client.
 func (h ToyHandler) Owner(c *fiber.Ctx) error {

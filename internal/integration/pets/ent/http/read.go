@@ -16,6 +16,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Read a Badge
+// @Description Read a Badge
+// @ID Read a Badge
+// @Tags [Badge]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Badge ID"
+// @Success 200 {object} ent.Badge
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /badge/{id} [get]
 // Read fetches the ent.Badge identified by a given url-parameter from the
 // database and renders it to the client.
 func (h *BadgeHandler) Read(c *fiber.Ctx) error {
@@ -51,6 +63,18 @@ func (h *BadgeHandler) Read(c *fiber.Ctx) error {
 	return c.JSON(NewBadge2492344257View(e))
 }
 
+// @Summary Read a Pet
+// @Description Read a Pet
+// @ID Read a Pet
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id} [get]
 // Read fetches the ent.Pet identified by a given url-parameter from the
 // database and renders it to the client.
 func (h *PetHandler) Read(c *fiber.Ctx) error {
@@ -1132,6 +1156,18 @@ func (h *PetHandler) Read(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Read a PlayGroup
+// @Description Read a PlayGroup
+// @ID Read a PlayGroup
+// @Tags [PlayGroup]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "PlayGroup ID"
+// @Success 200 {object} ent.PlayGroup
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /playgroup/{id} [get]
 // Read fetches the ent.PlayGroup identified by a given url-parameter from the
 // database and renders it to the client.
 func (h *PlayGroupHandler) Read(c *fiber.Ctx) error {
@@ -1167,6 +1203,18 @@ func (h *PlayGroupHandler) Read(c *fiber.Ctx) error {
 	return c.JSON(NewPlayGroup3432834655View(e))
 }
 
+// @Summary Read a Toy
+// @Description Read a Toy
+// @ID Read a Toy
+// @Tags [Toy]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Toy ID"
+// @Success 200 {object} ent.Toy
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /toy/{id} [get]
 // Read fetches the ent.Toy identified by a given url-parameter from the
 // database and renders it to the client.
 func (h *ToyHandler) Read(c *fiber.Ctx) error {

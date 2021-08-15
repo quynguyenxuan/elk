@@ -16,6 +16,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// @Summary Update a Badge
+// @Description Update a Badge
+// @ID Update a Badge
+// @Tags [Badge]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Badge ID"
+// @Success 200 {object} ent.Badge
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /badge/{id} [patch]
 // Update updates a given ent.Badge and saves the changes to the database.
 func (h BadgeHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
@@ -87,6 +99,18 @@ func (h BadgeHandler) Update(c *fiber.Ctx) error {
 	return c.JSON(NewBadge2492344257View(e))
 }
 
+// @Summary Update a Pet
+// @Description Update a Pet
+// @ID Update a Pet
+// @Tags [Pet]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Pet ID"
+// @Success 200 {object} ent.Pet
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /pet/{id} [patch]
 // Update updates a given ent.Pet and saves the changes to the database.
 func (h PetHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
@@ -1284,6 +1308,18 @@ func (h PetHandler) Update(c *fiber.Ctx) error {
 	return c.JSON(NewPet340207500View(e))
 }
 
+// @Summary Update a PlayGroup
+// @Description Update a PlayGroup
+// @ID Update a PlayGroup
+// @Tags [PlayGroup]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "PlayGroup ID"
+// @Success 200 {object} ent.PlayGroup
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /playgroup/{id} [patch]
 // Update updates a given ent.PlayGroup and saves the changes to the database.
 func (h PlayGroupHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
@@ -1357,6 +1393,18 @@ func (h PlayGroupHandler) Update(c *fiber.Ctx) error {
 	return c.JSON(NewPlayGroup3432834655View(e))
 }
 
+// @Summary Update a Toy
+// @Description Update a Toy
+// @ID Update a Toy
+// @Tags [Toy]
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Toy ID"
+// @Success 200 {object} ent.Toy
+// @Failure 400 {object} main.HTTPError
+// @Failure 404 {object} main.HTTPError
+// @Failure 500 {object} main.HTTPError
+// @Router /toy/{id} [patch]
 // Update updates a given ent.Toy and saves the changes to the database.
 func (h ToyHandler) Update(c *fiber.Ctx) error {
 	l := h.log.With(zap.String("method", "Update"))
