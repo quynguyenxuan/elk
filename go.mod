@@ -15,4 +15,5 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/fasthttp v1.28.0 // indirect
 	go.uber.org/zap v1.19.0
+	golang.org/x/tools v0.1.5
 )

@@ -1,12 +1,13 @@
 package elk
 
 import (
-	"entgo.io/ent/entc/gen"
 	"fmt"
-	"github.com/masseelch/elk/internal"
-	"github.com/stoewer/go-strcase"
 	"hash/fnv"
 	"text/template"
+
+	"entgo.io/ent/entc/gen"
+	"github.com/masseelch/elk/internal"
+	"github.com/stoewer/go-strcase"
 )
 
 //go:generate go run github.com/go-bindata/go-bindata/go-bindata -o=internal/bindata.go -pkg=internal -modtime=1 ./template/...
@@ -21,19 +22,27 @@ const (
 var actions = [...]string{actionCreate, actionRead, actionUpdate, actionList}
 
 var (
+	ExtendHttpTemplates = []gen.TypeTemplate{
+		{
+			Name:   "rest",
+			Format: pkgf("%s_rest.go"),
+		},
+	}
 	// HTTPTemplates holds all templates for generating http handlers.
 	HTTPTemplates = []*gen.Template{
-		parse("template/http/handler.tmpl"),
-		parse("template/http/create.tmpl"),
-		parse("template/http/read.tmpl"),
-		parse("template/http/update.tmpl"),
-		parse("template/http/delete.tmpl"),
-		parse("template/http/list.tmpl"),
-		parse("template/http/relations.tmpl"),
-		parse("template/http/request.tmpl"),
-		parse("template/http/response.tmpl"),
-		parse("template/http/helpers.tmpl"),
-		parse("template/http/import.tmpl"),
+		// parseT("template/http/http.tmpl"),
+		parseT("template/http/rest.tmpl"),
+		parseT("template/http/handler.tmpl"),
+		parseT("template/http/create.tmpl"),
+		parseT("template/http/read.tmpl"),
+		parseT("template/http/update.tmpl"),
+		parseT("template/http/delete.tmpl"),
+		parseT("template/http/list.tmpl"),
+		parseT("template/http/relations.tmpl"),
+		parseT("template/http/request.tmpl"),
+		parseT("template/http/response.tmpl"),
+		parseT("template/http/helpers.tmpl"),
+		parseT("template/http/import.tmpl"),
 	}
 	// TemplateFuncs contains the extra template functions used by elk.
 	TemplateFuncs = template.FuncMap{
@@ -44,9 +53,11 @@ var (
 		"responseViews":   responseViews,
 		"xextend":         xextend,
 	}
+	templates *gen.Template
+	importPkg = make(map[string]string)
 )
 
-func parse(path string) *gen.Template {
+func parseT(path string) *gen.Template {
 	return gen.MustParse(gen.NewTemplate(path).
 		Funcs(TemplateFuncs).
 		Parse(string(internal.MustAsset(path))))
@@ -277,4 +288,12 @@ func xextend(v interface{}, kv ...interface{}) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("invalid type for xextend: %T", v)
 	}
+}
+
+func pkgf(s string) func(t *gen.Type) string {
+	return func(t *gen.Type) string { return fmt.Sprintf(s, t.Package()) }
+}
+
+type graphError struct {
+	msg string
 }

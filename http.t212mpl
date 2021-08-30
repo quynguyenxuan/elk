@@ -1,0 +1,19 @@
+{{/* gotype: entgo.io/ent/entc/gen.Graph */}}
+
+{{ define "http/http-handler" }}
+    {{- with extend $ "Package" "http" -}}
+        {{ template "header" . }}
+    {{ end }}
+    {{ template "helper/http/import" $ }}
+
+    {{ range $n := $.Nodes }}
+        {{- template "helper/http/read"  $n -}}
+        {{- template "helper/http/create"  $n -}}
+        {{- template "helper/http/delete"  $n -}}
+        {{- template "helper/http/list"  $n -}}
+        {{- template "helper/http/update"  $n -}}
+        {{- template "helper/http/relations"  $n -}}
+        {{- template "helper/http/handler"  $n -}}
+    {{ end }}
+    
+{{ end }}
